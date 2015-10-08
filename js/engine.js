@@ -14,7 +14,8 @@
  * a little simpler to work with.
  */
 
-var Engine = (function(global) {
+var Engine;
+Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
@@ -23,11 +24,18 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        lastTime,
+        firstPlay,
+        animFrame;
 
+    global.ctx = ctx;
+    global.init = init;
+
+    firstPlay = true;
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
+
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -56,7 +64,12 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+        if (scoreboard.getLives() === 0) {
+            win.cancelAnimationFrame(animFrame);
+            Instructions.gameOver();
+        } else {
+            animFrame = win.requestAnimationFrame(main);
+        }
     }
 
     /* This function does some initial setup that should only occur once,
@@ -69,25 +82,31 @@ var Engine = (function(global) {
         main();
     }
 
+    function showInstructions() {
+        if (firstPlay) {
+            Instructions.showInstructions(firstPlay);
+        }
+    }
+
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
      * you implement your collision detection (when two entities occupy the
      * same space, for instance when your character should die), you may find
-     * the need to add an additional function call here. For now, we've left
+     * the need to add an additional function call here. for now, we've left
      * it commented out - you may or may not want to implement this
      * functionality this way (you could just implement collision detection
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
-    /* This is called by the update function  and loops through all of the
-     * objects within your allEnemies array as defined in app.js and calls
-     * their update() methods. It will then call the update function for your
-     * player object. These update methods should focus purely on updating
-     * the data/properties related to  the object. Do your drawing in your
+    /* this is called by the update function  and loops through all of the
+     * objects within your allenemies array as defined in app.js and calls
+     * their update() methods. it will then call the update function for your
+     * player object. these update methods should focus purely on updating
+     * the data/properties related to  the object. do your drawing in your
      * render methods.
      */
     function updateEntities(dt) {
@@ -95,15 +114,46 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        scoreboard.update();
     }
 
-    /* This function initially draws the "game level", it will then call
-     * the renderEntities function. Remember, this function is called every
+    /* this function tests to see if the player has collided with any of
+     * the enemies.
+     */
+    function checkCollisions() {
+        // get all enemies on the same row as the player
+        var enemiesOnSameRow = allEnemies.filter(checkYCollision);
+        if (enemiesOnSameRow.some(checkXCollision)) {
+            player.looseLife();
+        }
+    }
+
+    /* this function tests to see if an enemy and the player are on
+     * the same row
+     */
+    function checkYCollision(enemy) {
+        return enemy.y === player.y;
+    }
+
+    /* this function tests to see if an enemy and the player are overlapping.
+     * To count as overlapping, the enemy's trailing edge must be:
+     * - no more than 80px before the player's trailing edge, and
+     * - no more than 50px beyond the player's trailing edge.
+     */
+    function checkXCollision(enemy) {
+        return (player.x - enemy.x < 80) && (player.x - enemy.x > -50);
+    }
+
+    /* this function initially draws the "game level", it will then call
+     * the renderentities function. remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -
      * they are flipbooks creating the illusion of animation but in reality
      * they are just drawing the entire screen over and over.
      */
     function render() {
+        // clear the canvas of artifacts.
+        clearCanvas();
+
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
@@ -136,8 +186,17 @@ var Engine = (function(global) {
             }
         }
 
-
         renderEntities();
+
+    }
+
+    /* This function if called by the render function and is called on each game
+     * tick. It's purpose is to clear the canvas of artifacts from the characters
+     * when they overlap areas that are only covered by transparent section of
+     * tiles
+     */
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
     /* This function is called by the render function and is called on each game
@@ -153,14 +212,18 @@ var Engine = (function(global) {
         });
 
         player.render();
+        scoreboard.render();
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
+    /* This function will reset the player scores and lives when the user has
+     * elected to play again. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        if (player) {
+            player.resetScore();
+            player.resetLives();
+            player.goBackToStart();
+        }
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -174,11 +237,10 @@ var Engine = (function(global) {
         'images/enemy-bug.png',
         'images/char-boy.png'
     ]);
-    Resources.onReady(init);
+    Resources.onReady(showInstructions);
 
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developer's can use it more easily
      * from within their app.js files.
      */
-    global.ctx = ctx;
 })(this);
