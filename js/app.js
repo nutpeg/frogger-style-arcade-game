@@ -1,10 +1,16 @@
-// Enemies our player must avoid
 /**
  * @description Represents an Enemy
  * @constructor
  * @param {number} y - Starting y coordinate (vertical placement)
  */
+
+// Enemies our player must avoid
 var Enemy = function(y) {
+    // Set useful 'constants'
+    // x-coordinate at which enemies will (re)join canvas (off screen)
+    this.STARTING_X = -131;
+    // x-coordinate at which enemies leave canvas
+    this.MAX_X = 505;
     // The image/sprite for our enemies
     this.sprite = 'images/enemy-bug.png';
     // Calculate where to initially position enemy horizontally.
@@ -15,11 +21,6 @@ var Enemy = function(y) {
     this.velocity = this.getNewVelocity();
 };
 
-/** x-coordinate at which enemies will (re)join canvas (off screen) */
-Enemy.STARTING_X = -131;
-
-/** x-coordinate at which enemies leave canvas */
-Enemy.MAX_X = 505;
 
 /**
  * @description Calculates new velocity factor for enemy
@@ -42,7 +43,7 @@ Enemy.prototype.update = function(dt) {
 
     // Update position using velocity. If position is off screen
     // to the right, then reset position to start.
-    if (this.x >= Enemy.MAX_X) {
+    if (this.x >= this.MAX_X) {
         // Reset starting x position
         this.x = this.getStartingX();
         // Give the enemy a different speed
@@ -67,7 +68,7 @@ Enemy.prototype.render = function() {
 Enemy.prototype.getStartingX = function() {
     // Calculate a random number of pixels between 0 and 2000 before
     // the off-canvas starting point
-    return Enemy.STARTING_X - Math.random() * 2000;
+    return this.STARTING_X - Math.random() * 2000;
 };
 
 // Now write your own player class
