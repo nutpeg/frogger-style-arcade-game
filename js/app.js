@@ -80,6 +80,19 @@ Enemy.prototype.getStartingX = function() {
  * @constructor
  */
 var Player = function() {
+    // Set constants for correct positioning of Player within canvas.
+    // MAX_X - maximum possible x coordinate of Player sprite.
+    // MIN_X - minimum possible x coordinate of Player sprite.
+    // MAX_Y - maximum possible y coordinate of Player sprite.
+    // MIN_Y - minimum possible y coordinate of Player sprite.
+    // OFFSET_Y - adjustment to y coordinate of Player sprite to improve look.
+    // LIVES - the number of lives a Player should have at start of play.
+    this.MAX_X = 404;
+    this.MIN_X = 0;
+    this.OFFSET_Y = 20;
+    this.MAX_Y = 415 - this.OFFSET_Y;
+    this.MIN_Y = 0 - this.OFFSET_Y;
+    this.LIVES = 5;
     this.sprite = 'images/char-boy.png';
     this.x = this.getStartingX();
     this.y = this.getStartingY();
@@ -87,21 +100,7 @@ var Player = function() {
     this.score = this.resetScore();
 };
 
-/**
- * Set constants for correct positioning of Player within canvas.
- * MAX_X - maximum possible x coordinate of Player sprite.
- * MIN_X - minimum possible x coordinate of Player sprite.
- * MAX_Y - maximum possible y coordinate of Player sprite.
- * MIN_Y - minimum possible y coordinate of Player sprite.
- * OFFSET_Y - adjustment to y coordinate of Player sprite to improve look.
- * LIVES - the number of lives a Player should have at start of play.
- */
-Player.MAX_X = 404;
-Player.MIN_X = 0;
-Player.OFFSET_Y = 20;
-Player.MAX_Y = 415 - Player.OFFSET_Y;
-Player.MIN_Y = 0 - Player.OFFSET_Y;
-Player.LIVES = 5;
+
 
 /**
  * @description Set where new player position is prior to next render
@@ -110,10 +109,10 @@ Player.LIVES = 5;
  */
 Player.prototype.update = function(dx, dy) {
     // check for out of bounds
-    if ((this.y + dy >= Player.MIN_Y) && (this.y + dy <= Player.MAX_Y)) {
+    if ((this.y + dy >= this.MIN_Y) && (this.y + dy <= this.MAX_Y)) {
         this.y = this.y + dy;
     }
-    if ((this.x + dx >= Player.MIN_X) && (this.x + dx <= Player.MAX_X)) {
+    if ((this.x + dx >= this.MIN_X) && (this.x + dx <= this.MAX_X)) {
         this.x = this.x + dx;
     }
     // check successfully reached water
@@ -143,7 +142,7 @@ Player.prototype.getStartingX = function() {
  * @returns {number} y-coordinate in pixels.
  */
 Player.prototype.getStartingY = function() {
-    return Player.MAX_Y;
+    return this.MAX_Y;
 };
 
 /**
@@ -159,7 +158,7 @@ Player.prototype.resetScore = function() {
 };
 
 Player.prototype.resetLives = function() {
-    this.lives = Player.LIVES;
+    this.lives = this.LIVES;
 };
 
 /**
@@ -175,7 +174,7 @@ Player.prototype.getLives = function() {
  * @returns {boolean}
  */
 Player.prototype.reachedFinishPoint = function() {
-    return this.y === Player.MIN_Y;
+    return this.y === this.MIN_Y;
 };
 
 /**
