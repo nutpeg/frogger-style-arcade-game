@@ -1,4 +1,19 @@
 /**
+ * @description Represents a Character. Serves as parent for
+ *              Enemy and Player.
+ * @constructor
+ */
+var Character = function() {
+}
+
+/**
+ * @description Renders a character on screen.
+ */
+Character.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+/**
  * @description Represents an Enemy
  * @constructor
  * @param {number} y - Starting y coordinate (vertical placement)
@@ -21,6 +36,8 @@ var Enemy = function(y) {
     this.velocity = this.getNewVelocity();
 };
 
+Enemy.prototype = Object.create(Character.prototype);
+Enemy.prototype.constructor = Enemy;
 
 /**
  * @description Calculates new velocity factor for enemy
@@ -52,13 +69,6 @@ Enemy.prototype.update = function(dt) {
         // Move enemy to the right.
         this.x += this.velocity * dt;
     }
-};
-
-/**
- * @description Draw the enemy on the canvas
- */
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 /**
@@ -101,6 +111,8 @@ var Player = function() {
 };
 
 
+Player.prototype = Object.create(Character.prototype);
+Player.prototype.constructor = Player;
 
 /**
  * @description Set where new player position is prior to next render
@@ -120,13 +132,6 @@ Player.prototype.update = function(dx, dy) {
         this.score += 1;
         this.goBackToStart();
     }
-};
-
-/**
- * @description Draw the player on the canvas
- */
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 /**
