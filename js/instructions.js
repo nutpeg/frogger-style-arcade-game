@@ -107,7 +107,7 @@
   function handleRestartGameClick(e) {
     var position = getCursorPosition(e);
     if ((position.x > 182 && position.x < 323) && (position.y > 300 && position.y < 348)) {
-      ctx.canvas.removeEventListener('click', restartGame, false);
+      ctx.canvas.removeEventListener('click', handleRestartGameClick, false);
       init();
     }
   }
