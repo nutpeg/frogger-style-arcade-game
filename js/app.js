@@ -1,9 +1,19 @@
+/** Set up useful constants for tile height and width */
+var tileHeight = 83;
+var tileWidth = 101;
+
 /**
  * @description Represents a Character. Serves as parent for
  *              Enemy and Player.
+ * @param {number} x - x coordinate.
+ * @param {number} y - y coordinate.
+ * @param {string} sprite - file location of sprite image.
  * @constructor
  */
-var Character = function() {
+var Character = function(x, y, sprite) {
+    this.x = x;
+    this.y = y;
+    this.sprite = sprite;
 }
 
 /**
@@ -18,24 +28,20 @@ Character.prototype.render = function() {
  * @constructor
  * @param {number} y - Starting y coordinate (vertical placement)
  */
-
-// Enemies our player must avoid
 var Enemy = function(y) {
-    // Set useful 'constants'
-    // x-coordinate at which enemies will (re)join canvas (off screen)
-    this.STARTING_X = -131;
-    // x-coordinate at which enemies leave canvas
-    this.MAX_X = 505;
-    // The image/sprite for our enemies
-    this.sprite = 'images/enemy-bug.png';
-    // Calculate where to initially position enemy horizontally.
-    this.x = this.getStartingX();
-    this.y = y;
+    // Set useful 'constants'.
+    // x-coordinate at which enemies will (re)join canvas (off screen).
+    this.STARTING_X = -tileWidth;
+    // x-coordinate at which enemies leave canvas.
+    this.MAX_X = 5 * tileWidth;
+    // Call superclass to set up x, y and sprite.
+    Character.call(this, this.getStartingX(), y, 'images/enemy-bug.png');
     // Calculate initial randomised velocity factor - equates to pixels moved
     // per frame (later modified by delta value)
     this.velocity = this.getNewVelocity();
 };
 
+/** Enemy inherits from Character */
 Enemy.prototype = Object.create(Character.prototype);
 Enemy.prototype.constructor = Enemy;
 
@@ -77,7 +83,7 @@ Enemy.prototype.update = function(dt) {
  */
 Enemy.prototype.getStartingX = function() {
     // Calculate a random number of pixels between 0 and 2000 before
-    // the off-canvas starting point
+    // the off-canvas starting point.
     return this.STARTING_X - Math.random() * 2000;
 };
 
@@ -97,20 +103,18 @@ var Player = function() {
     // MIN_Y - minimum possible y coordinate of Player sprite.
     // OFFSET_Y - adjustment to y coordinate of Player sprite to improve look.
     // LIVES - the number of lives a Player should have at start of play.
-    this.MAX_X = 404;
+    this.MAX_X = 4 * tileWidth;
     this.MIN_X = 0;
     this.OFFSET_Y = 20;
-    this.MAX_Y = 415 - this.OFFSET_Y;
+    this.MAX_Y = 5 * tileHeight - this.OFFSET_Y;
     this.MIN_Y = 0 - this.OFFSET_Y;
     this.LIVES = 5;
-    this.sprite = 'images/char-boy.png';
-    this.x = this.getStartingX();
-    this.y = this.getStartingY();
+    Character.call(this, this.getStartingX(), this.getStartingY(), 'images/char-boy.png');
     this.lives = this.resetLives();
     this.score = this.resetScore();
 };
 
-
+/** Enemy inherits from Character */
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.constructor = Player;
 
@@ -158,10 +162,16 @@ Player.prototype.getScore = function() {
     return this.score;
 };
 
+/**
+ * @description Reset Player's score to zero.
+ */
 Player.prototype.resetScore = function() {
     this.score = 0;
 };
 
+/**
+ * @description Reset Player's lives to initial value.
+ */
 Player.prototype.resetLives = function() {
     this.lives = this.LIVES;
 };
@@ -204,8 +214,6 @@ Player.prototype.looseLife = function() {
  * @param {string} pressedKey - String representing the key pressed.
  */
 Player.prototype.handleInput = function(pressedKey) {
-    var tileHeight = 83;
-    var tileWidth = 101;
     var dx = 0;
     var dy = 0;
     switch (pressedKey) {
