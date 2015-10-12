@@ -1,6 +1,6 @@
 /** Set up useful constants for tile height and width */
-var tileHeight = 83;
-var tileWidth = 101;
+var TILE_HEIGHT = 83;
+var TILE_WIDTH = 101;
 
 /**
  * @description Represents a Character. Serves as parent for
@@ -31,9 +31,9 @@ Character.prototype.render = function() {
 var Enemy = function(y) {
     // Set useful 'constants'.
     // x-coordinate at which enemies will (re)join canvas (off screen).
-    this.STARTING_X = -tileWidth;
+    this.STARTING_X = -TILE_WIDTH;
     // x-coordinate at which enemies leave canvas.
-    this.MAX_X = 5 * tileWidth;
+    this.MAX_X = 5 * TILE_WIDTH;
     // Call superclass to set up x, y and sprite.
     Character.call(this, this.getStartingX(), y, 'images/enemy-bug.png');
     // Calculate initial randomised velocity factor - equates to pixels moved
@@ -103,10 +103,10 @@ var Player = function() {
     // MIN_Y - minimum possible y coordinate of Player sprite.
     // OFFSET_Y - adjustment to y coordinate of Player sprite to improve look.
     // LIVES - the number of lives a Player should have at start of play.
-    this.MAX_X = 4 * tileWidth;
+    this.MAX_X = 4 * TILE_WIDTH;
     this.MIN_X = 0;
     this.OFFSET_Y = 20;
-    this.MAX_Y = 5 * tileHeight - this.OFFSET_Y;
+    this.MAX_Y = 5 * TILE_HEIGHT - this.OFFSET_Y;
     this.MIN_Y = 0 - this.OFFSET_Y;
     this.LIVES = 5;
     Character.call(this, this.getStartingX(), this.getStartingY(), 'images/char-boy.png');
@@ -218,16 +218,16 @@ Player.prototype.handleInput = function(pressedKey) {
     var dy = 0;
     switch (pressedKey) {
         case 'left':
-            dx = dx - tileWidth;
+            dx = dx - TILE_WIDTH;
             break;
         case 'up':
-            dy = dy - tileHeight;
+            dy = dy - TILE_HEIGHT;
             break;
         case 'right':
-            dx = dx + tileWidth;
+            dx = dx + TILE_WIDTH;
             break;
         case 'down':
-            dy = dy + tileHeight;
+            dy = dy + TILE_HEIGHT;
             break;
         default:
             return;
