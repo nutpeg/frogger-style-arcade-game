@@ -121,7 +121,7 @@
   function getCursorPosition(e) {
     var x;
     var y;
-    if (e.pageX != undefined && e.pageY != undefined) {
+    if (e.pageX !== undefined && e.pageY !== undefined) {
       x = e.pageX;
       y = e.pageY;
     }
@@ -141,5 +141,5 @@
   window.Instructions = {
     showInstructions: showInstructions,
     gameOver: gameOver
-  }
+  };
 })();
