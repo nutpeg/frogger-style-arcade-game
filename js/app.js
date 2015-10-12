@@ -14,14 +14,14 @@ var Character = function(x, y, sprite) {
     this.x = x;
     this.y = y;
     this.sprite = sprite;
-}
+};
 
 /**
  * @description Renders a character on screen.
  */
 Character.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 /**
  * @description Represents an Enemy
@@ -86,10 +86,6 @@ Enemy.prototype.getStartingX = function() {
     // the off-canvas starting point.
     return this.STARTING_X - Math.random() * 2000;
 };
-
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
 
 /**
  * @description Represents a Player. Uses image avatar.
@@ -287,8 +283,6 @@ Scoreboard.prototype.render = function() {
     ctx.fillText(livesText, 380, 578);
 };
 
-// Now instantiate your objects.
-
 // Place all enemy objects in an array called allEnemies.
 var allEnemies = [];
 // Place the player object in a variable called player.
@@ -309,10 +303,8 @@ function createEnemies(total) {
   }
 }
 
-
-
 // This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+// Player.handleInput() method.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
