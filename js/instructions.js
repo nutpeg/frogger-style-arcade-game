@@ -25,15 +25,15 @@
       ctx.font = '20px sans-serif';
       ctx.textAlign = 'left';
       createLine(UserText.text.para1, 20, 150);
-      createLine(UserText.text.para2, 20, 255);
-      createLine(UserText.text.para3, 20, 305);
-      createLine(UserText.text.para4, 20, 380);
+      createLine(UserText.text.para2, 20, 200);
+      createLine(UserText.text.para3, 20, 345);
+      createLine(UserText.text.para4, 20, 450);
       ctx.fillStyle = 'red';
-      ctx.fillRect(183, 450, 138, 48);
+      ctx.fillRect(183, 480, 138, 48);
       ctx.textAlign = 'center';
       ctx.font = '24px "Comic Sans MS", "Comic Sans", cursive';
       ctx.fillStyle = 'white';
-      ctx.fillText('Start!', 252, 482);
+      ctx.fillText('Start!', 252, 512);
       ctx.canvas.addEventListener('click', handleStartClick, false);
       document.addEventListener('keyup', handleStartGameKeyPress, false);
     }
